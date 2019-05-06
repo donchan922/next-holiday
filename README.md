@@ -20,5 +20,8 @@ $ ./gradlew bootRun
 
 Access to http://localhost:8080/
 
+## Reference
+[国民の祝日について - 内閣府](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html?PHPSESSID=013ef321a0aea2e19e3937010efdf4e3)
+
 ## License
 This software is released under the MIT License.
