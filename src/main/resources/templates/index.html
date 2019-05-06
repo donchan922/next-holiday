@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>次の祝日までどんだけ〜</title>
+    <link href="/css/main.css" th:href="@{/css/main.css}" rel="stylesheet"></link>
+</head>
+<body>
+    <h1>
+        <label th:text="${#dates.format(holiday.date, 'M月d日(EEE)')}"></label>
+    </h1>
+    <h2>
+        <label th:text="${holiday.name}"></label>
+        <label class="message">まで</label>
+    </h2>
+    <input type="hidden" id="holidayDate" th:value="${holiday.date}">
+    <h1 id="result"></h1>
+    <img th:src="@{/img/{holidayImage}(holidayImage=${holiday.image})}">
+    <script src="/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

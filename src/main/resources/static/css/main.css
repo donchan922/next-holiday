@@ -1,0 +1,19 @@
+body {
+  font-family: 'Courier New', sans-serif;
+  background: #eee;
+  text-align: center;
+}
+.message {
+  font-size: 20px;
+}
+@media only screen and (max-width: 767px) {
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .d, .h, .m, .s {
+    font-size: 24px;
+  }
+}
