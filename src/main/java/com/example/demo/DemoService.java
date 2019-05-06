@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -8,7 +9,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@org.springframework.stereotype.Service
+@Service
 public class DemoService {
 
     public Holiday nextHoliday() throws Exception {
