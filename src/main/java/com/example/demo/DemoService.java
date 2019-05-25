@@ -1,16 +1,22 @@
 package com.example.demo;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
+@RequiredArgsConstructor
 @Service
 public class DemoService {
+
+    private final Clock clock;
 
     public Holiday nextHoliday() throws Exception {
 
@@ -18,8 +24,11 @@ public class DemoService {
         InputStream is = new ClassPathResource("syukujitsu.csv").getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(is, "SJIS"));
 
-        Date sysDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");
+        // 現在日付取得
+        LocalDate nowDate = LocalDate.now(clock);
+        // 日付フォーマット
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("uuuu/M/d")
+                .withResolverStyle(ResolverStyle.STRICT);
 
         String line;
 
@@ -34,8 +43,10 @@ public class DemoService {
             // holiday[0] = 祝日の日付(yyyy/M/D), holiday[1] = 祝日の名前
             String[] holiday = line.split(",", 0);
 
-            // 現在日時より未来の祝日の場合
-            if (sdf.parse(holiday[0]).after(sysDate)) {
+            LocalDate holidayDate = LocalDate.parse(holiday[0], dateFormat);
+
+            // ファイル内の日付が現在より未来（直近の祝日）の場合
+            if (holidayDate.isAfter(nowDate)) {
 
                 String img;
 
