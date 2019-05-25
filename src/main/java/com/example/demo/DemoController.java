@@ -19,8 +19,8 @@ public class DemoController {
         try {
             model.addAttribute("holiday", demoService.nextHoliday());
             return "index";
-        } catch (Exception e) {
-            logger.error("system error", e);
+        } catch (Exception ex) {
+            logger.error("system error", ex);
             return "error";
         }
     }
