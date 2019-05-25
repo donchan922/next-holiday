@@ -39,7 +39,7 @@ public class DemoService {
 
                 String img;
 
-                if (holiday[1].contains("元旦")) {
+                if (holiday[1].contains("元日")) {
                     img = "gantan.png";
                 } else if (holiday[1].contains("成人の日")) {
                     img = "seijin.png";
