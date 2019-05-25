@@ -1,45 +1,58 @@
 package com.example.demo;
 
-import org.springframework.core.io.ClassPathResource;
+import com.example.demo.dto.Holiday;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
+import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class DemoService {
 
+    private final Resource loadHolidayFile;
+    private final Clock clock;
+
     public Holiday nextHoliday() throws Exception {
 
-        // 祝日のCSVファイルを読み込む
-        InputStream is = new ClassPathResource("syukujitsu.csv").getInputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(is, "SJIS"));
+        // 祝日のCSVファイルを一括で読み込む
+        Path path = Paths.get(loadHolidayFile.getURI());
+        List<String> lines = Files.readAllLines(path, Charset.forName("Shift_JIS"));
 
-        Date sysDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");
+        // 現在日付取得
+        LocalDate nowDate = LocalDate.now(clock);
+        // 日付フォーマット
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("uuuu/M/d")
+                .withResolverStyle(ResolverStyle.STRICT);
 
-        String line;
-
-        // 1行ずつCSVファイルを読み込む
-        for (int i = 0; (line = br.readLine()) != null; i++) {
+        for (String line : lines) {
 
             // 1行目（ヘッダ行）はスキップ
-            if (i == 0) {
+            if (lines.get(0).equals(line)) {
                 continue;
             }
 
-            // holiday[0] = 祝日の日付(yyyy/M/D), holiday[1] = 祝日の名前
+            // holiday[0] = 祝日の日付(yyyy/M/D)
+            // holiday[1] = 祝日の名前
             String[] holiday = line.split(",", 0);
 
-            // 現在日時より未来の祝日の場合
-            if (sdf.parse(holiday[0]).after(sysDate)) {
+            LocalDate holidayDate = LocalDate.parse(holiday[0], dateFormat);
+
+            // ファイル内の日付が現在より未来（直近の祝日）の場合
+            if (holidayDate.isAfter(nowDate)) {
 
                 String img;
 
-                if (holiday[1].contains("元旦")) {
+                if (holiday[1].contains("元日")) {
                     img = "gantan.png";
                 } else if (holiday[1].contains("成人の日")) {
                     img = "seijin.png";
@@ -72,14 +85,11 @@ public class DemoService {
                 } else if (holiday[1].contains("スポーツの日")) {
                     img = "sport.png";
                 } else {
-                    br.close();
                     return new Holiday(holiday[0], "振替休日", "hurikae.png");
                 }
-                br.close();
                 return new Holiday(holiday[0], holiday[1], img);
             }
         }
-        br.close();
         // 次の祝日が取得できなかった場合は、システムエラー
         throw new Exception();
     }
