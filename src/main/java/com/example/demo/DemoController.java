@@ -20,7 +20,7 @@ public class DemoController {
             model.addAttribute("holiday", demoService.nextHoliday());
             return "index";
         } catch (Exception e) {
-            logger.error("system error." + e.getMessage());
+            logger.error("system error", e);
             return "error";
         }
     }
