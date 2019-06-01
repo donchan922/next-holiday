@@ -30,27 +30,23 @@ class DemoControllerTest {
     @Test
     void 正常() throws Exception {
 
-        // 設定
-
         // 実行
-        mockMvc.perform(MockMvcRequestBuilders.get("/")).andExpect(status().isOk()).andReturn();
-
         // 検証
+        mockMvc.perform(MockMvcRequestBuilders.get("/")).andExpect(status().isOk());
         assertAll(
                 () -> verify(demoService, times(1)).nextHoliday()
         );
     }
 
     @Test
-    void 正常_例外発生() throws Exception {
+    void 例外発生() throws Exception {
 
         // 設定
         doThrow(new Exception()).when(demoService).nextHoliday();
 
         // 実行
-        mockMvc.perform(MockMvcRequestBuilders.get("/")).andExpect(status().isOk()).andReturn();
-
         // 検証
+        mockMvc.perform(MockMvcRequestBuilders.get("/")).andExpect(status().isOk());
         assertAll(
                 () -> verify(demoService, times(1)).nextHoliday(),
                 () -> assertThrows(Exception.class,
