@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
+
 @Controller
 @RequiredArgsConstructor
 public class DemoController {
@@ -19,7 +21,7 @@ public class DemoController {
         try {
             model.addAttribute("holiday", demoService.nextHoliday());
             return "index";
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             logger.error("system error", ex);
             return "error";
         }

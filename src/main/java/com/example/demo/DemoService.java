@@ -1,12 +1,14 @@
 package com.example.demo;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,13 +18,15 @@ import java.time.format.ResolverStyle;
 @Service
 public class DemoService {
 
+    private final static String HOLIDAY_FILE_PATH = "src/main/resources/syukujitsu.csv";
+
     private final Clock clock;
 
-    public Holiday nextHoliday() throws Exception {
+    public Holiday nextHoliday() throws IOException {
 
         // 祝日のCSVファイルを読み込む
-        try (InputStream is = new ClassPathResource("syukujitsu.csv").getInputStream();
-             BufferedReader br = new BufferedReader(new InputStreamReader(is, "SJIS"))) {
+        Path path = Paths.get(HOLIDAY_FILE_PATH);
+        try (BufferedReader br = Files.newBufferedReader(path, Charset.forName("SJIS"))) {
 
             // 現在日付取得
             LocalDate nowDate = LocalDate.now(clock);
@@ -89,9 +93,7 @@ public class DemoService {
                 }
             }
             // 次の祝日が取得できなかった場合は、システムエラー
-            throw new Exception();
-        } catch (Exception ex) {
-            throw ex;
+            throw new IOException();
         }
     }
 }
